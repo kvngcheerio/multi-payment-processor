@@ -1,0 +1,32 @@
+{
+  "name": "multi-payment-processor",
+  "version": "0.0.1",
+  "description": "library to integrate all payment processors as one",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kvngcheerio/multi-payment-processor.git"
+  },
+  "keywords": [
+    "paystack",
+    "flutterwave",
+    "monnify",
+    "paga",
+    "stripe",
+    "payment",
+    "processing"
+  ],
+  "author": "Omozue Gregory",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kvngcheerio/multi-payment-processor/issues"
+  },
+  "homepage": "https://github.com/kvngcheerio/multi-payment-processor#readme",
+  "dependencies": {
+    "axios": "^0.26.1",
+    "dotenv": "^16.0.0"
+  }
+}
