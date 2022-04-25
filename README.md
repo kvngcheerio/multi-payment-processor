@@ -18,6 +18,7 @@ FLUTTERWAVE_SECRET_KEY=xxxxxxxxxxxxx
 FLUTTERWAVE_PUBLIC_KEY=xxxxxxxxxxxxx
 MONNIFY_SECRET_KEY=xxxxxxxxxxxxx
 MONNIFY_PUBLIC_KEY=xxxxxxxxxxxxx
+MERCHANT_EMAIL=merchant@gmail.com
 ```
 *If you are using a hosting service like heroku, ensure to add the above details to your configuration variables.*
 
