@@ -16,6 +16,7 @@ const getAllBanks = async() => {
 }
 
 
+
 module.exports = {
     getAllBanks,
 }
