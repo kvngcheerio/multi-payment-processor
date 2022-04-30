@@ -11,7 +11,7 @@ npm i multi-payment-processor
 Open your .env file and add your public key, secret key, merchant email and selected processor like so:
 
 ```js
-PROCESSOR=PAYSTACK|FLUTTERWAVE|MONNIFY
+PROCESSOR=PAYSTACK|FLUTTERWAVE
 PAYSTACK_SECRET_KEY=xxxxxxxxxxxxx
 PAYSTACK_PUBLIC_KEY=xxxxxxxxxxxxx
 FLUTTERWAVE_SECRET_KEY=xxxxxxxxxxxxx
