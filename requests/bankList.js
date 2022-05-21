@@ -11,7 +11,7 @@ const getAllBanks = async() => {
           }
     }
     catch(e){
-        console.log('Get all bank failed', e)
+        throw 'Get all bank failed';
     }
 }
 
