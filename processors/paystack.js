@@ -34,10 +34,10 @@ const getPaystackBankList = async() => {
     try{
         //make bank list call with makeurl util by passing in banklist url, method and authorization header
         const bankListCall = await makeUrlCall(paystackBankUrl, METHODS.GET, callHeaders);
-        if(bankList.status === status.Success){
+        if(bankListCall){
             const bankList = await bankListResponse(bankListCall);
             return {
-                ... extractStatus(response),
+                ...extractStatus(response),
                 banks: bankList
             };  
         }
