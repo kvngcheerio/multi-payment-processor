@@ -47,7 +47,7 @@ const getPaystackBankList = async() => {
         }
     }
     catch(err){
-        console.log(err, 'Paystack get bank list');
+        throw 'Bank list error';
     }
 }
 
