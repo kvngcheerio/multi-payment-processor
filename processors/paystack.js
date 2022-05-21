@@ -1,7 +1,7 @@
 const axios = require('axios');
-const {paystackBankUrl, paystackVerifyAccountUrl} = require('../config/environment')
-const  {generateReference, convertAmount, reduceAmount, extractResponseProperty} = require('../utils/helpers');
-const  {makeUrlCall} = require('../utils/configFunctions');
+const {paystackBankUrl} = require('../config/environment')
+const {extractResponseProperty} = require('../utils/helpers');
+const {makeUrlCall} = require('../utils/configFunctions');
 const {bankListResponse} = require('../config/response')
 
 
