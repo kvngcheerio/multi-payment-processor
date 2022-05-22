@@ -3,9 +3,10 @@
 require("dotenv").config({silent: true});
 require('./config');
 require('./utils');
-const {bankList} = require('./requests');
+require('./processors')
+const {getAllBanks} = require('./requests/bankList');
 
 
 module.exports = {
-    bankList
+    getAllBanks,
 }
