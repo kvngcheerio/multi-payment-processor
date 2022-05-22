@@ -89,13 +89,13 @@ const paystackInitiateCheckout = async(emailAddress, amount, callbackUrl) => {
             callUrl: paystackURL,
             callMethod: METHODS.POST,
             callHeaders: callHeaders,
-            callRequest:{email:emailAddress, amount: convertAmount(amount), callbackUrl:callbackUrl}
+            callRequest:{email:emailAddress, amount: convertAmount(amount), callback_url:callbackUrl}
         }
         const checkoutCall = await makeUrlCallWithData(callObject);
         if(checkoutCall){
             const outResponse = {
                 authorization_url:'paymentUrl',
-                reference:'paumentReference'
+                reference:'paymentReference'
             }
 
             const checkoutDetail = await checkoutResponse(checkoutCall.data, outResponse);
@@ -114,12 +114,14 @@ const paystackInitiateCheckout = async(emailAddress, amount, callbackUrl) => {
 //verify payment
 const paystackVerifyTransaction = async(paymentReference) => {
     try{
+        
         //make bank list call with makeurl util by passing in banklist url, method and authorization header
         const callObject = {
             callUrl:`${paystackTransactionVerificationUrl}/${paymentReference}`, 
             callMethod:METHODS.GET, 
             callHeaders:callHeaders, 
         }
+        
         const transactionVerificationCall = await makeUrlCallWithoutData(callObject);
         if(transactionVerificationCall){
             const outResponse = {
@@ -129,10 +131,10 @@ const paystackVerifyTransaction = async(paymentReference) => {
                 channel: "paymentChannel",
                 fees:"paymentFees"
             }
-            const transactionVerification = await bankListResponse(transactionVerificationCall.data, outResponse);
+            const transactionVerification = await checkoutResponse(transactionVerificationCall.data, outResponse);
             return {
                 ...extractStatus(transactionVerificationCall),
-                transaction: {...transactionVerification, amount:reduceAmount(transactionVerification.amount)}
+                transaction: {...transactionVerification, paymentAmount:reduceAmount(transactionVerification.paymentAmount)}
             };  
         }
         
