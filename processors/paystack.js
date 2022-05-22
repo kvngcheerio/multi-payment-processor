@@ -1,5 +1,5 @@
 const {paystackBankUrl, paystackSecretKey, paystackVerifyAccountUrl, paystackURL, paystackTransactionVerificationUrl} = require('../config/environment')
-const {extractResponseProperty, convertAmount} = require('../utils/helpers');
+const {extractResponseProperty, convertAmount, reduceAmount} = require('../utils/helpers');
 const {makeUrlCallWithoutData, makeUrlCallWithData} = require('../utils/configFunctions');
 const {bankListResponse, verifyAccountResponse, checkoutResponse} = require('../config/response')
 
@@ -132,7 +132,7 @@ const paystackVerifyTransaction = async(paymentReference) => {
             const transactionVerification = await bankListResponse(transactionVerificationCall.data, outResponse);
             return {
                 ...extractStatus(transactionVerificationCall),
-                transaction: transactionVerification
+                transaction: {...transactionVerification, amount:reduceAmount(transactionVerification.amount)}
             };  
         }
         
