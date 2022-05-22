@@ -1,12 +1,16 @@
-const {monnifyBankUrl, monnifyApiKey, monnifyLoginUrl} = require('../config/environment')
+const {monnifyBankUrl, monnifyApiKey, monnifyLoginUrl, monnifySecretKey} = require('../config/environment')
 const {extractResponseProperty} = require('../utils/helpers');
 const {makeUrlCall} = require('../utils/configFunctions');
 const {bankListResponse} = require('../config/response')
 
 
 const loginCallHeaders = {
-    Authorization: `Bearer ${monnifyApiKey}`
+    Authorization: `Basic ${encode}`
 };
+
+const encode = () => {
+    return Buffer.from(`${monnifyApiKey}:${monnifySecretKey}`).toString("base64")
+}
 
 const callHeaders = async() => {
     const accessToken  = await makeLoginCall();
@@ -51,7 +55,7 @@ const getMonnifyBankList = async() => {
     try{
         //make bank list call with makeurl util by passing in banklist url, method and authorization header
         const callObject = {
-            callUrl:flutterwavebankURL, 
+            callUrl:monnifyBankUrl, 
             callMethod:METHODS.GET, 
             callHeaders:await callHeaders(), 
         }

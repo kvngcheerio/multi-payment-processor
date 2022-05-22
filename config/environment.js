@@ -4,7 +4,8 @@ module.exports = {
     paystackSecretKey: process.env.PAYSTACK_SECRET_KEY,
     paystackPublicKey: process.env.PAYSTACK_PUBLIC_KEY,
     flutterwaveSecretKey: process.env.FLUTTERWAVE_SECRET_KEY,
-    monnifyApiKey: process.env.MONNIFY_SECRET_KEY,
+    monnifySecretKey: process.env.MONNIFY_SECRET_KEY,
+    monnifyApiKey: process.env.MONNIFY_API_KEY,
 
 
     //system configurations
