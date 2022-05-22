@@ -18,15 +18,15 @@ const makeUrlCall = async (callObject) => {
     }
     
     const args = {
-        method: METHODS[callMethod.toLowerCase()],
+        method: callMethod.toLowerCase(),
         headers: {...HEADERS, ...callHeaders},
     };
 
     let requestBody = await axios[args.method](callUrl, {headers:args.headers}, callRequest).then((response) => { return response.data}).catch((err)=> {throw err});
     if (Object.keys(requestBody).length) {
-        endpointResponse = await extractResponseBody(response);
+      return requestBody;
     }
-    return endpointResponse;
+    
   }
 
   module.exports = {

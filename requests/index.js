@@ -1,4 +1,4 @@
-const bankList = require('./bankList')
+const getAllBanks = require('./bankList')
 module.exports = {
-    bankList
+    getAllBanks
 }
