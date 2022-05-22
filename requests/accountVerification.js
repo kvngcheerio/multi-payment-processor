@@ -1,5 +1,5 @@
 const {processor} = require('../config/environment');
-const {paystack} = require('../processors');
+const {paystack, flutterwave} = require('../processors');
 
 const verifyBankAccount = async({accountNumber:accountNumber, bankCode: bankCode}) => {
     try{
@@ -7,10 +7,11 @@ const verifyBankAccount = async({accountNumber:accountNumber, bankCode: bankCode
             throw 'Please enter PROCESSOR in env file';
         switch (processor) {
             case "PAYSTACK":return paystack.paystackVerifyBankAccount(accountNumber, bankCode);
+            case "FLUTTERWAVE": return flutterwave.flutterwaveVerifyBankAccount(accountNumber, bankCode);
           }
     }
     catch(e){
-        throw 'Get all bank failed';
+        throw 'verify bank account failed';
     }
 }
 
