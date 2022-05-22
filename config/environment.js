@@ -4,6 +4,7 @@ module.exports = {
     paystackSecretKey: process.env.PAYSTACK_SECRET_KEY,
     paystackPublicKey: process.env.PAYSTACK_PUBLIC_KEY,
     flutterwaveSecretKey: process.env.FLUTTERWAVE_SECRET_KEY,
+    monnifyApiKey: process.env.MONNIFY_SECRET_KEY,
 
 
     //system configurations
@@ -15,10 +16,17 @@ module.exports = {
     paystackTransferUrl: 'https://api.paystack.co/transfer',
     paystackTransactionVerificationUrl: 'https://api.paystack.co/transaction/verification',
 
+    //flutterwave
     flutterwavebeneficiaryURL: 'https://api.flutterwave.com/v3/beneficiaries',
     flutterwavepaymentURL: 'https://api.flutterwave.com/v3/payments',
     flutterwaveverifyURL: 'https://api.flutterwave.com/v3/transactions/',
     flutterwavebankURL: 'https://api.flutterwave.com/v3/banks/NG',
     flutterwaveaccountURL: 'https://api.flutterwave.com/v3/accounts/resolve',
+
+
+    //monnify
+    monnifyLoginUrl:'https://sandbox.monnify.com/api/v1/auth/login',
+    monnifyBankUrl: 'https://sandbox.monnify.com/api/v1/banks',
+
 
 }

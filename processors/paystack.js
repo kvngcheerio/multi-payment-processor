@@ -8,15 +8,6 @@ const callHeaders = {
     Authorization: `Bearer ${paystackSecretKey}`
 };
 
-const currency = {
-    NGN: "NGN",
-};
-
-const status = {
-    Success: true,
-    Error: false
-}
-
 const METHODS = {
     GET:'get',
     POST:'post'
@@ -24,7 +15,7 @@ const METHODS = {
 
 const extractStatus = (response) => ({
     status: extractResponseProperty("status", response),
-    status_message: extractResponseProperty("message", response),
+    status: extractResponseProperty("message", response),
   });
 
 
@@ -43,7 +34,7 @@ const getPaystackBankList = async() => {
                 name: "bankName",
                 code: "bankCode"
             }
-            const bankList = await bankListResponse(bankListCall, outResponse);
+            const bankList = await bankListResponse(bankListCall.data, outResponse);
             return {
                 ...extractStatus(bankListCall),
                 banks: bankList

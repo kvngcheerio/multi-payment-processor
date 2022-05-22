@@ -8,13 +8,6 @@ const callHeaders = {
     Authorization: `Bearer ${flutterwaveSecretKey}`
 };
 
-const currency = {
-    NGN: "NGN",
-};
-
-const status = {
-    Success: 'success',
-}
 
 const METHODS = {
     GET:'get',
@@ -23,7 +16,7 @@ const METHODS = {
 
 const extractStatus = (response) => ({
     status: extractResponseProperty("status", response),
-    status_message: extractResponseProperty("message", response),
+    message: extractResponseProperty("message", response),
   });
 
 
@@ -42,7 +35,7 @@ const getFlutterwaveBankList = async() => {
                 name: "bankName",
                 code: "bankCode"
             }
-            const bankList = await bankListResponse(bankListCall, outResponse);
+            const bankList = await bankListResponse(bankListCall.data, outResponse);
             return {
                 ...extractStatus(bankListCall),
                 banks: bankList
