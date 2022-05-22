@@ -32,17 +32,13 @@ const convertAmount = (amount) => parseFloat(amount) * 100;
 const reduceAmount = (amount) => parseFloat(amount) / 100;
 
 const extractResponseProperty = (property, parent) => {
-  !parent || !property ? undefined : parent[property];
+  return !parent || !property ? undefined : parent[property];
 }
 
 const parseResponseValues = function (values, outResponse) {
-  values = values || {};
   const newObject = {};
     Object.keys(outResponse)
       .map((response) => {
-        if (typeof values[response] == "boolean") {
-          newObject[outResponse[response]] = values[response];
-        }
         if (!!values[response]) {
           newObject[outResponse[response]] = values[response];
         }
