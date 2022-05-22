@@ -89,13 +89,21 @@ const paystackInitiateCheckout = async(emailAddress, amount, callbackUrl) => {
             callUrl: paystackURL,
             callMethod: METHODS.POST,
             callHeaders: callHeaders,
+<<<<<<< HEAD
             callRequest:{email:emailAddress, amount: convertAmount(amount), callback_url:callbackUrl}
+=======
+            callRequest:{email:emailAddress, amount: convertAmount(amount), callbackUrl:callbackUrl}
+>>>>>>> 309ccf481ab62394effffc71acc6468ab27cb1c1
         }
         const checkoutCall = await makeUrlCallWithData(callObject);
         if(checkoutCall){
             const outResponse = {
                 authorization_url:'paymentUrl',
+<<<<<<< HEAD
                 reference:'paymentReference'
+=======
+                reference:'paumentReference'
+>>>>>>> 309ccf481ab62394effffc71acc6468ab27cb1c1
             }
 
             const checkoutDetail = await checkoutResponse(checkoutCall.data, outResponse);
