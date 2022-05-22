@@ -15,7 +15,7 @@ const METHODS = {
 
 const extractStatus = (response) => ({
     status: extractResponseProperty("status", response),
-    status: extractResponseProperty("message", response),
+    message: extractResponseProperty("message", response),
   });
 
 
