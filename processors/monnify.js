@@ -1,19 +1,17 @@
 const {monnifyBankUrl, monnifyApiKey, monnifyLoginUrl, monnifySecretKey} = require('../config/environment')
 const {extractResponseProperty} = require('../utils/helpers');
-const {makeUrlCall} = require('../utils/configFunctions');
+const {makeUrlCallWithData, makeUrlCallWithoutData} = require('../utils/configFunctions');
 const {bankListResponse} = require('../config/response')
 
 
 const loginCallHeaders = {
-    Authorization: `Basic ${encode}`
+    Authorization: `Basic ${Buffer.from(`${monnifyApiKey}:${monnifySecretKey}`).toString("base64")}`
 };
 
-const encode = () => {
-    return Buffer.from(`${monnifyApiKey}:${monnifySecretKey}`).toString("base64")
-}
+
 
 const callHeaders = async() => {
-    const accessToken  = await makeLoginCall();
+    const {accessToken}  = await makeLoginCall();
     return {
         Authorization: `Bearer ${accessToken}`
     }
@@ -26,7 +24,7 @@ const METHODS = {
 }
 
 const extractStatus = (response) => ({
-    status: extractResponseProperty("Successful", response),
+    status: extractResponseProperty("requestSuccessful", response),
     message: extractResponseProperty("responseMessage", response),
   });
 
@@ -36,8 +34,9 @@ const makeLoginCall = async() => {
             callUrl: monnifyLoginUrl,
             callMethod: METHODS.POST,
             callHeaders: loginCallHeaders,
+            callRequest:{}
         }
-        const loginCall = await makeUrlCall(callObject);
+        const loginCall = await makeUrlCallWithData(callObject);
         if(loginCall){
             return {
                 accessToken: loginCall.responseBody.accessToken
@@ -59,7 +58,7 @@ const getMonnifyBankList = async() => {
             callMethod:METHODS.GET, 
             callHeaders:await callHeaders(), 
         }
-        const bankListCall = await makeUrlCall(callObject);
+        const bankListCall = await makeUrlCallWithoutData(callObject);
         if(bankListCall){
             const outResponse = {
                 name: "bankName",

@@ -1,5 +1,5 @@
 const {processor} = require('../config/environment');
-const {paystack, flutterwave} = require('../processors');
+const {paystack, flutterwave, monnify} = require('../processors');
 
 const getAllBanks = async() => {
     try{
@@ -8,9 +8,8 @@ const getAllBanks = async() => {
         switch (processor) {
             case "PAYSTACK":return paystack.getPaystackBankList();
             case "FLUTTERWAVE": return flutterwave.getFlutterwaveBankList();
+            case "MONNIFY": return monnify.getMonnifyBankList();
           }
-        
-    
     }
     catch(e){
         throw 'Get all bank failed';

@@ -1,6 +1,6 @@
 const {paystackBankUrl, paystackSecretKey} = require('../config/environment')
 const {extractResponseProperty} = require('../utils/helpers');
-const {makeUrlCall} = require('../utils/configFunctions');
+const {makeUrlCallWithoutData} = require('../utils/configFunctions');
 const {bankListResponse} = require('../config/response')
 
 
@@ -28,7 +28,7 @@ const getPaystackBankList = async() => {
             callMethod:METHODS.GET, 
             callHeaders:callHeaders, 
         }
-        const bankListCall = await makeUrlCall(callObject);
+        const bankListCall = await makeUrlCallWithoutData(callObject);
         if(bankListCall){
             const outResponse = {
                 name: "bankName",
