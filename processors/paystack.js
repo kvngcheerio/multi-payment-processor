@@ -39,7 +39,11 @@ const getPaystackBankList = async() => {
         }
         const bankListCall = await makeUrlCall(callObject);
         if(bankListCall){
-            const bankList = await bankListResponse(bankListCall);
+            const outResponse = {
+                name: "bankName",
+                code: "bankCode"
+            }
+            const bankList = await bankListResponse(bankListCall, outResponse);
             return {
                 ...extractStatus(bankListCall),
                 banks: bankList
