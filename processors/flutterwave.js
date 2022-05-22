@@ -1,4 +1,4 @@
-const {flutterwavebankURL, flutterwaveSecretKey, flutterwaveverifyURL} = require('../config/environment')
+const {flutterwavebankURL, flutterwaveSecretKey, flutterwaveaccountURL} = require('../config/environment')
 const {extractResponseProperty} = require('../utils/helpers');
 const {makeUrlCallWithoutData, makeUrlCallWithData} = require('../utils/configFunctions');
 const {bankListResponse, verifyAccountResponse} = require('../config/response')
@@ -55,8 +55,8 @@ const getFlutterwaveBankList = async() => {
 const flutterwaveVerifyBankAccount = async(accountNumber, bankCode) => {
     try{
         const callObject = {
-            callUrl:flutterwaveverifyURL, 
-            callMethod:METHODS.GET, 
+            callUrl:flutterwaveaccountURL, 
+            callMethod:METHODS.POST, 
             callHeaders:callHeaders,
             callRequest: JSON.stringify({"account_number":accountNumber,"account_bank":bankCode})
         }
