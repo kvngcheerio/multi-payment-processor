@@ -28,16 +28,16 @@ const getPaystackBankList = async() => {
             callMethod:METHODS.GET, 
             callHeaders:callHeaders, 
         }
-        const verifyAccountCall = await makeUrlCallWithoutData(callObject);
-        if(verifyAccountCall){
+        const bankListCall = await makeUrlCallWithoutData(callObject);
+        if(bankListCall){
             const outResponse = {
-                account_name: "accountName",
-                account_number: "accountNumber"
+                name: "bankName",
+                code: "bankCode"
             }
-            const accountDetail = await verifyAccountResponse(verifyAccountCall.data, outResponse);
+            const bankList = await bankListResponse(bankListCall.data, outResponse);
             return {
-                ...extractStatus(verifyAccountCall),
-                accountDetail: accountDetail
+                ...extractStatus(bankListCall),
+                banks: bankList
             };  
         }
         
@@ -46,7 +46,7 @@ const getPaystackBankList = async() => {
         }
     }
     catch(err){
-        throw 'account verification error';
+        throw 'Bank list error';
     }
 }
 
@@ -56,32 +56,26 @@ const paystackVerifyBankAccount = async(accountNumber, bankCode) => {
         const callObject = {
             callUrl:`${paystackVerifyAccountUrl}?account_number=${accountNumber}&bank_code=${bankCode}`, 
             callMethod:METHODS.GET, 
-            callHeaders:callHeaders, 
-            callParams
+            callHeaders:callHeaders
         }
-        const bankListCall = await makeUrlCallWithoutData(callObject);
-    const url = `${paystackVerifyAccountUrl}?account_number=${accountNumber}&bank_code=${bankCode}`;
-    const header = await paystackHeaders();
-    const accountDetail = await axios.get(url, {headers:header}).then((response) => {
-        return response.data;
-    })
-    .catch((error) => {
-        console.log(error, 'Paystack axios error')
-    });
-    if(accountDetail && accountDetail.status == true){
-        const {account_number, account_name} = accountDetail.data
-        return {
-            bankCode: bankCode,
-            accountNumber: account_number,
-            accountName: account_name
+        const verifyAccountCall = await makeUrlCallWithoutData(callObject);
+        if(verifyAccountCall){
+            const outResponse = {
+                account_name: "accountName",
+                account_number: "accountNumber"
+            }
+            const accountDetail = await verifyAccountResponse(verifyAccountCall.data, outResponse);
+            return {
+                ...extractStatus(verifyAccountCall),
+                accountDetail: {...accountDetail, bankCode}
+            };  
         }
-    }
-    else {
+        else {
         return;
     }
 }
  catch(error){
-     console.log(error, 'Paystack verify bank account error');
+     throw 'Paystack verify bank account error';
     };
 
 
