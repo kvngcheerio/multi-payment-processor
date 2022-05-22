@@ -8,7 +8,12 @@ const bankListResponse =  (bankList, outResponse) => {
 }
 
 
+const verifyAccountResponse = (verification, outResponse) => {
+    return parseResponseValues(verification, outResponse);
+}
+
 
 module.exports = {
-    bankListResponse
+    bankListResponse,
+    verifyAccountResponse
 }
