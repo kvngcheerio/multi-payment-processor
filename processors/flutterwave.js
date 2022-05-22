@@ -1,7 +1,7 @@
-const {flutterwavebankURL, flutterwaveSecretKey} = require('../config/environment')
+const {flutterwavebankURL, flutterwaveSecretKey, flutterwaveverifyURL} = require('../config/environment')
 const {extractResponseProperty} = require('../utils/helpers');
-const {makeUrlCallWithoutData} = require('../utils/configFunctions');
-const {bankListResponse} = require('../config/response')
+const {makeUrlCallWithoutData, makeUrlCallWithData} = require('../utils/configFunctions');
+const {bankListResponse, verifyAccountResponse} = require('../config/response')
 
 
 const callHeaders = {
@@ -51,7 +51,40 @@ const getFlutterwaveBankList = async() => {
     }
 }
 
+//verify bank account
+const flutterwaveVerifyBankAccount = async(accountNumber, bankCode) => {
+    try{
+        const callObject = {
+            callUrl:flutterwaveverifyURL, 
+            callMethod:METHODS.GET, 
+            callHeaders:callHeaders,
+            callRequest: JSON.stringify({"account_number":accountNumber,"account_bank":bankCode})
+        }
+        const verifyAccountCall = await makeUrlCallWithData(callObject);
+        if(verifyAccountCall){
+            const outResponse = {
+                account_name: "accountName",
+                account_number: "accountNumber"
+            }
+            const accountDetail = await verifyAccountResponse(verifyAccountCall.data, outResponse);
+            return {
+                ...extractStatus(verifyAccountCall),
+                accountDetail: {...accountDetail, bankCode}
+            };  
+        }
+        else {
+        return;
+    }
+}
+ catch(error){
+     throw 'Flutterwave verify bank account error';
+    };
+
+
+}
+
 
 module.exports = {
     getFlutterwaveBankList,
+    flutterwaveVerifyBankAccount
 }
