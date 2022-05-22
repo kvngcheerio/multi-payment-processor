@@ -1,7 +1,7 @@
-const {paystackBankUrl, paystackSecretKey, paystackVerifyAccountUrl} = require('../config/environment')
-const {extractResponseProperty} = require('../utils/helpers');
-const {makeUrlCallWithoutData} = require('../utils/configFunctions');
-const {bankListResponse, verifyAccountResponse} = require('../config/response')
+const {paystackBankUrl, paystackSecretKey, paystackVerifyAccountUrl, paystackURL, paystackTransactionVerificationUrl} = require('../config/environment')
+const {extractResponseProperty, convertAmount} = require('../utils/helpers');
+const {makeUrlCallWithoutData, makeUrlCallWithData} = require('../utils/configFunctions');
+const {bankListResponse, verifyAccountResponse, checkoutResponse} = require('../config/response')
 
 
 const callHeaders = {
@@ -12,6 +12,7 @@ const METHODS = {
     GET:'get',
     POST:'post'
 }
+
 
 const extractStatus = (response) => ({
     status: extractResponseProperty("status", response),
@@ -71,7 +72,7 @@ const paystackVerifyBankAccount = async(accountNumber, bankCode) => {
             };  
         }
         else {
-        return;
+        throw 'invalid call';
     }
 }
  catch(error){
@@ -81,8 +82,75 @@ const paystackVerifyBankAccount = async(accountNumber, bankCode) => {
 
 }
 
+//make payment
+const paystackInitiateCheckout = async(emailAddress, amount, callbackUrl) => {
+    try {
+        const callObject = {
+            callUrl: paystackURL,
+            callMethod: METHODS.POST,
+            callHeaders: callHeaders,
+            callRequest:{email:emailAddress, amount: convertAmount(amount), callbackUrl:callbackUrl}
+        }
+        const checkoutCall = await makeUrlCallWithData(callObject);
+        if(checkoutCall){
+            const outResponse = {
+                authorization_url:'paymentUrl',
+                reference:'paumentReference'
+            }
+
+            const checkoutDetail = await checkoutResponse(checkoutCall.data, outResponse);
+            return {
+                ...extractStatus(checkoutCall),
+                checkout:checkoutDetail
+            };  
+        }
+    }
+    catch(e){
+        throw e;
+    }
+    
+}
+
+//verify payment
+const paystackVerifyTransaction = async(paymentReference) => {
+    try{
+        //make bank list call with makeurl util by passing in banklist url, method and authorization header
+        const callObject = {
+            callUrl:`${paystackTransactionVerificationUrl}/${paymentReference}`, 
+            callMethod:METHODS.GET, 
+            callHeaders:callHeaders, 
+        }
+        const transactionVerificationCall = await makeUrlCallWithoutData(callObject);
+        if(transactionVerificationCall){
+            const outResponse = {
+                amount: "paymentAmount",
+                status: "paymentStatus",
+                reference: "paymentReference",
+                channel: "paymentChannel",
+                fees:"paymentFees"
+            }
+            const transactionVerification = await bankListResponse(transactionVerificationCall.data, outResponse);
+            return {
+                ...extractStatus(transactionVerificationCall),
+                transaction: transactionVerification
+            };  
+        }
+        
+        else {
+            throw 'invalid call';
+        }
+    }
+    catch(err){
+       throw err
+    }
+
+}
+
+
 
 module.exports = {
     getPaystackBankList,
     paystackVerifyBankAccount,
+    paystackInitiateCheckout,
+    paystackVerifyTransaction,
 }

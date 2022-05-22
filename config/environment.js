@@ -15,7 +15,7 @@ module.exports = {
     paystackVerifyAccountUrl: 'https://api.paystack.co/bank/resolve',
     paystackPreTransferUrl: 'https://api.paystack.co/transferrecipient',
     paystackTransferUrl: 'https://api.paystack.co/transfer',
-    paystackTransactionVerificationUrl: 'https://api.paystack.co/transaction/verification',
+    paystackTransactionVerificationUrl: 'https://api.paystack.co/transaction/verify',
 
     //flutterwave
     flutterwavebeneficiaryURL: 'https://api.flutterwave.com/v3/beneficiaries',

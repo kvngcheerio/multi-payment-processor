@@ -13,7 +13,14 @@ const verifyAccountResponse = (verification, outResponse) => {
 }
 
 
+const checkoutResponse = (data, outResponse) => {
+    return parseResponseValues(data, outResponse);
+}
+
+
+
 module.exports = {
     bankListResponse,
-    verifyAccountResponse
+    verifyAccountResponse,
+    checkoutResponse,
 }
