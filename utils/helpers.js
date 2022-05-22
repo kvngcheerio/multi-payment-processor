@@ -16,17 +16,7 @@ const generateSlug = async (data) => {
     .replace(/[^\w-]+/g, '')
 }
 
-const extractResponseBody = async (response) => {
-  const responseContent = await response;
-  if (!response.headers) return await responseContent.json();
 
-  const contentType = response.headers.get("content-type");
-  if (contentType && contentType.indexOf("application/json") !== -1) {
-    return await responseContent.json();
-  } else {
-    return await response.text();
-  }
-};
 
 const convertAmount = (amount) => parseFloat(amount) * 100;
 const reduceAmount = (amount) => parseFloat(amount) / 100;
@@ -52,7 +42,6 @@ const parseResponseValues = function (values, outResponse) {
 module.exports = {
   generateReference,
   generateSlug,
-  extractResponseBody,
   convertAmount,
   reduceAmount,
   extractResponseProperty,

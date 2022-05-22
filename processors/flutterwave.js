@@ -1,11 +1,11 @@
-const {paystackBankUrl, paystackSecretKey} = require('../config/environment')
+const {flutterwavebankURL, flutterwaveSecretKey} = require('../config/environment')
 const {extractResponseProperty} = require('../utils/helpers');
 const {makeUrlCall} = require('../utils/configFunctions');
 const {bankListResponse} = require('../config/response')
 
 
 const callHeaders = {
-    Authorization: `Bearer ${paystackSecretKey}`
+    Authorization: `Bearer ${flutterwaveSecretKey}`
 };
 
 const currency = {
@@ -13,8 +13,7 @@ const currency = {
 };
 
 const status = {
-    Success: true,
-    Error: false
+    Success: 'success',
 }
 
 const METHODS = {
@@ -29,11 +28,11 @@ const extractStatus = (response) => ({
 
 
 //get bank list
-const getPaystackBankList = async() => {
+const getFlutterwaveBankList = async() => {
     try{
         //make bank list call with makeurl util by passing in banklist url, method and authorization header
         const callObject = {
-            callUrl:paystackBankUrl, 
+            callUrl:flutterwavebankURL, 
             callMethod:METHODS.GET, 
             callHeaders:callHeaders, 
         }
@@ -61,5 +60,5 @@ const getPaystackBankList = async() => {
 
 
 module.exports = {
-    getPaystackBankList,
+    getFlutterwaveBankList,
 }

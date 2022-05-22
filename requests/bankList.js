@@ -1,14 +1,16 @@
 const {processor} = require('../config/environment');
-const {paystack} = require('../processors');
+const {paystack, flutterwave} = require('../processors');
 
 const getAllBanks = async() => {
     try{
+        if(!processor) 
+            throw 'Please enter PROCESSOR in env file';
         switch (processor) {
-            case "PAYSTACK":
-              return paystack.getPaystackBankList();
-            default:
-              return paystack.getPaystackBankList();
+            case "PAYSTACK":return paystack.getPaystackBankList();
+            case "FLUTTERWAVE": return flutterwave.getFlutterwaveBankList();
           }
+        
+    
     }
     catch(e){
         throw 'Get all bank failed';
