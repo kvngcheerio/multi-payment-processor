@@ -8,7 +8,7 @@ const HEADERS = {
 };
 
 const makeUrlCallWithoutData = async (callObject) => {
-    const { callUrl, callMethod, callHeaders, callParams } = callObject
+    const { callUrl, callMethod, callHeaders} = callObject
 
     if (!callUrl) {
       throw 'invalid Url'

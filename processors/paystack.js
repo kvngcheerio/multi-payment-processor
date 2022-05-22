@@ -1,7 +1,7 @@
-const {paystackBankUrl, paystackSecretKey} = require('../config/environment')
+const {paystackBankUrl, paystackSecretKey, paystackVerifyAccountUrl} = require('../config/environment')
 const {extractResponseProperty} = require('../utils/helpers');
 const {makeUrlCallWithoutData} = require('../utils/configFunctions');
-const {bankListResponse} = require('../config/response')
+const {bankListResponse, verifyAccountResponse} = require('../config/response')
 
 
 const callHeaders = {
@@ -28,16 +28,16 @@ const getPaystackBankList = async() => {
             callMethod:METHODS.GET, 
             callHeaders:callHeaders, 
         }
-        const bankListCall = await makeUrlCallWithoutData(callObject);
-        if(bankListCall){
+        const verifyAccountCall = await makeUrlCallWithoutData(callObject);
+        if(verifyAccountCall){
             const outResponse = {
-                name: "bankName",
-                code: "bankCode"
+                account_name: "accountName",
+                account_number: "accountNumber"
             }
-            const bankList = await bankListResponse(bankListCall.data, outResponse);
+            const accountDetail = await verifyAccountResponse(verifyAccountCall.data, outResponse);
             return {
-                ...extractStatus(bankListCall),
-                banks: bankList
+                ...extractStatus(verifyAccountCall),
+                accountDetail: accountDetail
             };  
         }
         
@@ -46,11 +46,49 @@ const getPaystackBankList = async() => {
         }
     }
     catch(err){
-        throw 'Bank list error';
+        throw 'account verification error';
     }
+}
+
+//verify bank account
+const paystackVerifyBankAccount = async(accountNumber, bankCode) => {
+    try{
+        const callObject = {
+            callUrl:`${paystackVerifyAccountUrl}?account_number=${accountNumber}&bank_code=${bankCode}`, 
+            callMethod:METHODS.GET, 
+            callHeaders:callHeaders, 
+            callParams
+        }
+        const bankListCall = await makeUrlCallWithoutData(callObject);
+    const url = `${paystackVerifyAccountUrl}?account_number=${accountNumber}&bank_code=${bankCode}`;
+    const header = await paystackHeaders();
+    const accountDetail = await axios.get(url, {headers:header}).then((response) => {
+        return response.data;
+    })
+    .catch((error) => {
+        console.log(error, 'Paystack axios error')
+    });
+    if(accountDetail && accountDetail.status == true){
+        const {account_number, account_name} = accountDetail.data
+        return {
+            bankCode: bankCode,
+            accountNumber: account_number,
+            accountName: account_name
+        }
+    }
+    else {
+        return;
+    }
+}
+ catch(error){
+     console.log(error, 'Paystack verify bank account error');
+    };
+
+
 }
 
 
 module.exports = {
     getPaystackBankList,
+    paystackVerifyBankAccount,
 }
