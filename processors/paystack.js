@@ -1,12 +1,11 @@
-const axios = require('axios');
-const {paystackBankUrl} = require('../config/environment')
+const {paystackBankUrl, paystackSecretKey} = require('../config/environment')
 const {extractResponseProperty} = require('../utils/helpers');
 const {makeUrlCall} = require('../utils/configFunctions');
 const {bankListResponse} = require('../config/response')
 
 
 const callHeaders = {
-    Authorization: `Bearer ${paystackKey}`
+    Authorization: `Bearer ${paystackSecretKey}`
 };
 
 const currency = {
@@ -33,11 +32,16 @@ const extractStatus = (response) => ({
 const getPaystackBankList = async() => {
     try{
         //make bank list call with makeurl util by passing in banklist url, method and authorization header
-        const bankListCall = await makeUrlCall(paystackBankUrl, METHODS.GET, callHeaders);
+        const callObject = {
+            callUrl:paystackBankUrl, 
+            callMethod:METHODS.GET, 
+            callHeaders:callHeaders, 
+        }
+        const bankListCall = await makeUrlCall(callObject);
         if(bankListCall){
             const bankList = await bankListResponse(bankListCall);
             return {
-                ...extractStatus(response),
+                ...extractStatus(bankListCall),
                 banks: bankList
             };  
         }
