@@ -1,7 +1,7 @@
 const {flutterwavebankURL, flutterwaveSecretKey, flutterwaveaccountURL, flutterwavepaymentURL, flutterwaveverifyURL} = require('../config/environment')
-const {extractResponseProperty, generateReference} = require('../utils/helpers');
+const {extractResponseProperty, generateReference, convertAmount, reduceAmount} = require('../utils/helpers');
 const {makeUrlCallWithoutData, makeUrlCallWithData} = require('../utils/configFunctions');
-const {bankListResponse, verifyAccountResponse} = require('../config/response')
+const {bankListResponse, verifyAccountResponse, checkoutResponse} = require('../config/response')
 
 
 const callHeaders = {
@@ -87,23 +87,23 @@ const flutterwaveVerifyBankAccount = async(accountNumber, bankCode) => {
 //make payment
 const flutterwaveInitiateCheckout = async(emailAddress, amount, callbackUrl, others) => {
     try {
-        const generatedReference = generateReference(15);
+        const generatedReference = await generateReference(15);
         const callObject = {
             callUrl: flutterwavepaymentURL,
             callMethod: METHODS.POST,
             callHeaders: callHeaders,
-            callRequest:JSON.stringify({tx_ref: generatedReference, customer:{...others.customer, email:emailAddress}, amount: convertAmount(amount), redirect_url:callbackUrl, ...others.customizations})
+            callRequest: JSON.stringify({tx_ref: generatedReference, customer:{email:emailAddress}, amount: amount, redirect_url:callbackUrl, ...others})
         }
         const checkoutCall = await makeUrlCallWithData(callObject);
+        
         if(checkoutCall){
             const outResponse = {
                 link:'paymentUrl'
             }
-
             const checkoutDetail = await checkoutResponse(checkoutCall.data, outResponse);
             return {
                 ...extractStatus(checkoutCall),
-                checkout:{...checkoutDetail, reference: generatedReference}
+                checkout:{...checkoutDetail, paymentReference: generatedReference}
             };  
         }
     }
@@ -116,26 +116,26 @@ const flutterwaveInitiateCheckout = async(emailAddress, amount, callbackUrl, oth
 //verify payment
 const flutterwaveVerifyTransaction = async(paymentReference) => {
     try{
+
         //make bank list call with makeurl util by passing in banklist url, method and authorization header
         const callObject = {
-            callUrl:`${flutterwaveverifyURLpaymentReference}/verify`, 
+            callUrl:`${flutterwaveverifyURL+paymentReference}/verify`, 
             callMethod:METHODS.GET, 
             callHeaders:callHeaders, 
         }
-        
         const transactionVerificationCall = await makeUrlCallWithoutData(callObject);
         if(transactionVerificationCall){
             const outResponse = {
                 amount: "paymentAmount",
                 status: "paymentStatus",
-                reference: "paymentReference",
-                channel: "paymentChannel",
-                fees:"paymentFees"
+                tx_ref: "paymentReference",
+                payment_type: "paymentChannel",
+                app_fee:"paymentFees"
             }
             const transactionVerification = await checkoutResponse(transactionVerificationCall.data, outResponse);
             return {
                 ...extractStatus(transactionVerificationCall),
-                transaction: {...transactionVerification, paymentAmount:reduceAmount(transactionVerification.paymentAmount)}
+                transaction: {...transactionVerification}
             };  
         }
         
