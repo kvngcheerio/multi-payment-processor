@@ -6,7 +6,8 @@ const initiateTransfer = async({bankCode:bankCode, accountNumber:accountNumber, 
         if(!processor) 
             throw 'Please enter PROCESSOR in env file';
         switch (processor) {
-            case "FLUTTERWAVE":return flutterwave.flutterwaveInitiateCheckout(bankCode, accountNumber, amount, currency, narration, callbackUrl, others);
+            case "FLUTTERWAVE":
+                return flutterwave.flutterwaveInitiateTransfer(bankCode, accountNumber, amount, currency, narration, callbackUrl, others);
           }
     }
     catch(e){

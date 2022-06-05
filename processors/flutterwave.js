@@ -154,7 +154,7 @@ const flutterwaveInitiateTransfer = async(bankCode, accountNumber, amount, curre
     try{
         //make bank list call with makeurl util by passing in banklist url, method and authorization header
         const callObject = {
-            callUrl:`${flutterwaveverifyURL+paymentReference}/verify`, 
+            callUrl:flutterwavetransferURL, 
             callMethod:METHODS.POST, 
             callHeaders:callHeaders, 
             callRequest: JSON.stringify({ ...others, account_bank: bankCode, account_number: accountNumber,amount: amount, narration: narration,currency: currency, callback_url: callbackUrl,}
@@ -175,7 +175,7 @@ const flutterwaveInitiateTransfer = async(bankCode, accountNumber, amount, curre
             }
             const transfer = await transferResponse(transferCall.data, outResponse);
             return {
-                ...extractStatus(transfer),
+                ...extractStatus(transferCall),
                 transaction: {...transfer}
             };  
         }
