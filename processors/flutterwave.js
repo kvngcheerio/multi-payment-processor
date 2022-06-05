@@ -175,11 +175,7 @@ const flutterwaveInitiateTransfer = async(bankCode, accountNumber, amount, curre
             }
             const transfer = await transferResponse(transferCall.data, outResponse);
             return {
-<<<<<<< HEAD
                 ...extractStatus(transferCall),
-=======
-                ...extractStatus(transfer),
->>>>>>> 06243f2b8285d89af0f4536f826e5228d2aec050
                 transaction: {...transfer}
             };  
         }
