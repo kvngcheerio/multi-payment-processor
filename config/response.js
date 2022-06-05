@@ -17,10 +17,15 @@ const checkoutResponse = (data, outResponse) => {
     return parseResponseValues(data, outResponse);
 }
 
+const transferResponse = (data, outResponse) => {
+    return parseResponseValues(data, outResponse);
+}
+
 
 
 module.exports = {
     bankListResponse,
     verifyAccountResponse,
     checkoutResponse,
+    transferResponse,
 }

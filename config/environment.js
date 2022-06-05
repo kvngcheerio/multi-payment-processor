@@ -23,6 +23,7 @@ module.exports = {
     flutterwaveverifyURL: 'https://api.flutterwave.com/v3/transactions/',
     flutterwavebankURL: 'https://api.flutterwave.com/v3/banks/NG',
     flutterwaveaccountURL: 'https://api.flutterwave.com/v3/accounts/resolve',
+    flutterwavetransferURL: 'https://api.flutterwave.com/v3/transfers',
 
 
     //monnify
