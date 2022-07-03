@@ -224,4 +224,5 @@ module.exports = {
     paystackVerifyBankAccount,
     paystackInitiateCheckout,
     paystackVerifyTransaction,
+    paystackMakeTransfer
 }
