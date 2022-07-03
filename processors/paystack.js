@@ -160,7 +160,7 @@ const paystackMakeTransfer = async(accountNumber, bankCode, accountName, amount,
             callUrl: paystackTransferUrl,
             callMethod: METHODS.POST,
             callHeaders: callHeaders,
-            callRequest:{type:'nuban', amount: convertAmount(amount), recipient:preTransferCall.preTransfer.recipientCode, reason:description}
+            callRequest:{"source": "balance", amount: convertAmount(amount), recipient:preTransferCall.preTransfer.recipientCode, reason:description}
         }
         const transferCall = await makeUrlCallWithData(callObject);
 
