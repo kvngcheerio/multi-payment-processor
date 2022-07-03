@@ -1,7 +1,7 @@
-const {paystackBankUrl, paystackSecretKey, paystackVerifyAccountUrl, paystackURL, paystackTransactionVerificationUrl} = require('../config/environment')
+const {paystackBankUrl, paystackSecretKey, paystackVerifyAccountUrl, paystackURL, paystackTransactionVerificationUrl, paystackPreTransferUrl, paystackTransferUrl} = require('../config/environment')
 const {extractResponseProperty, convertAmount, reduceAmount} = require('../utils/helpers');
 const {makeUrlCallWithoutData, makeUrlCallWithData} = require('../utils/configFunctions');
-const {bankListResponse, verifyAccountResponse, checkoutResponse} = require('../config/response')
+const {bankListResponse, verifyAccountResponse, checkoutResponse, transferResponse} = require('../config/response')
 
 
 const callHeaders = {
@@ -19,6 +19,9 @@ const extractStatus = (response) => ({
     message: extractResponseProperty("message", response),
   });
 
+const CURRENCY = {
+    NGN:'NGN'
+}
 
 //get bank list
 const getPaystackBankList = async() => {
@@ -147,6 +150,72 @@ const paystackVerifyTransaction = async(paymentReference) => {
     }
 
 }
+
+//make transfer
+const paystackMakeTransfer = async(accountNumber, bankCode, accountName, amount, description) => {
+    try{
+        const preTransferCall = await preTransfer(accountNumber, bankCode, accountName);
+
+        const callObject = {
+            callUrl: paystackTransferUrl,
+            callMethod: METHODS.POST,
+            callHeaders: callHeaders,
+            callRequest:{type:'nuban', amount: convertAmount(amount), recipient:preTransferCall.preTransfer.recipientCode, reason:description}
+        }
+        const transferCall = await makeUrlCallWithData(callObject);
+
+        if(transferCall){
+            const outResponse = {
+                reference:'transferReference',
+                status: "transferStatus",
+                amount:"transferAmount",
+            }
+
+            const transfer = await transferResponse(transferCall.data, outResponse);
+            return {
+                ...extractStatus(transfer),
+                transaction:{...transfer, accountNumber:preTransferCall.preTransfer.details.account_number, bankCode:preTransferCall.preTransfer.details.bank_code, fullName:preTransferCall.preTransfer.details.account_name, currency: CURRENCY.NGN, amount:reduceAmount(transfer.transferAmount)}
+            };  
+        }
+
+
+
+    }
+    catch(error) {
+        console.log(error, 'Paystack make transfer error');
+    }
+
+}
+
+const preTransfer = async(accountNumber, bankCode, accountName) => {
+    try{
+        const callObject = {
+            callUrl: paystackPreTransferUrl,
+            callMethod: METHODS.POST,
+            callHeaders: callHeaders,
+            callRequest:{type:'nuban', account_number:accountNumber, bank_code:bankCode, name:accountName, currency:CURRENCY.NGN}
+        }
+        const preTransferCall = await makeUrlCallWithData(callObject);
+
+        if(preTransferCall){
+            const outResponse = {
+                recipient_code:'recipientCode',
+                details:'details'
+            }
+
+            const preTransfer = await transferResponse(preTransferCall.data, outResponse);
+            return {
+                ...extractStatus(preTransfer),
+                preTransfer:preTransfer
+            };  
+        }
+    }
+    catch(error) {
+        console.log(error, 'Paystack pre transfer error');
+    }
+}
+
+
 
 
 
