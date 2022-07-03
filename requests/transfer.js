@@ -1,5 +1,5 @@
 const {processor} = require('../config/environment');
-const {flutterwave} = require('../processors');
+const {flutterwave, paystack} = require('../processors');
 
 const initiateTransfer = async({bankCode:bankCode, accountNumber:accountNumber, amount:amount, currency:currency, narration:narration, callbackUrl:callbackUrl, others}) => {
     try{
@@ -8,6 +8,8 @@ const initiateTransfer = async({bankCode:bankCode, accountNumber:accountNumber, 
         switch (processor) {
             case "FLUTTERWAVE":
                 return flutterwave.flutterwaveInitiateTransfer(bankCode, accountNumber, amount, currency, narration, callbackUrl, others);
+            case "PAYSTACK" :
+                return paystack.paystackMakeTransfer(accountNumber, bankCode, amount, narration)
           }
     }
     catch(e){

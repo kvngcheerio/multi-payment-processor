@@ -152,9 +152,9 @@ const paystackVerifyTransaction = async(paymentReference) => {
 }
 
 //make transfer
-const paystackMakeTransfer = async(accountNumber, bankCode, accountName, amount, description) => {
+const paystackMakeTransfer = async(accountNumber, bankCode, amount, description) => {
     try{
-        const preTransferCall = await preTransfer(accountNumber, bankCode, accountName);
+        const preTransferCall = await preTransfer(accountNumber, bankCode);
 
         const callObject = {
             callUrl: paystackTransferUrl,
@@ -187,13 +187,14 @@ const paystackMakeTransfer = async(accountNumber, bankCode, accountName, amount,
 
 }
 
-const preTransfer = async(accountNumber, bankCode, accountName) => {
+const preTransfer = async(accountNumber, bankCode) => {
     try{
+        const verifyAccountCall = await paystackVerifyBankAccount(accountNumber, bankCode)
         const callObject = {
             callUrl: paystackPreTransferUrl,
             callMethod: METHODS.POST,
             callHeaders: callHeaders,
-            callRequest:{type:'nuban', account_number:accountNumber, bank_code:bankCode, name:accountName, currency:CURRENCY.NGN}
+            callRequest:{type:'nuban', account_number:accountNumber, bank_code:bankCode, name:verifyAccountCall.accountDetail.accountName, currency:CURRENCY.NGN}
         }
         const preTransferCall = await makeUrlCallWithData(callObject);
 
@@ -206,7 +207,7 @@ const preTransfer = async(accountNumber, bankCode, accountName) => {
             const preTransfer = await transferResponse(preTransferCall.data, outResponse);
             return {
                 ...extractStatus(preTransfer),
-                preTransfer:preTransfer
+                preTransfer:{...preTransfer}
             };  
         }
     }
