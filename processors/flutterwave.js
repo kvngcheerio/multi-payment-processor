@@ -8,7 +8,6 @@ const callHeaders = {
     Authorization: `Bearer ${flutterwaveSecretKey}`
 };
 
-
 const METHODS = {
     GET:'get',
     POST:'post'
@@ -43,11 +42,11 @@ const getFlutterwaveBankList = async() => {
         }
         
         else {
-            throw 'invalid call';
+            throw 'Unable to reach flutterwave bank list service';
         }
     }
     catch(err){
-        throw 'Bank list error';
+        throw `Unable to reach flutterwave bank list service - ${err}`;
     }
 }
 
@@ -73,11 +72,11 @@ const flutterwaveVerifyBankAccount = async(accountNumber, bankCode) => {
             };  
         }
         else {
-        return;
+        throw 'Flutterwave verify bank account error'
     }
 }
  catch(error){
-     throw 'Flutterwave verify bank account error';
+     throw `Flutterwave verify bank account error - ${error}`;
     };
 
 
@@ -106,9 +105,12 @@ const flutterwaveInitiateCheckout = async(emailAddress, amount, callbackUrl, oth
                 checkout:{...checkoutDetail, paymentReference: generatedReference}
             };  
         }
+        else {
+            throw 'Unable to create flutterwave payment link'
+        }
     }
     catch(e){
-        throw e;
+        throw `Unable to create flutterwave payment link - ${e}`;
     }
     
 }
@@ -140,11 +142,11 @@ const flutterwaveVerifyTransaction = async(paymentReference) => {
         }
         
         else {
-            throw 'invalid call';
+            throw 'Unable to verify transaction via flutterwave';
         }
     }
     catch(err){
-       throw err
+       throw `Unable to verify transaction via flutterwave - ${err}`
     }
 
 }
@@ -181,11 +183,11 @@ const flutterwaveInitiateTransfer = async(bankCode, accountNumber, amount, curre
         }
         
         else {
-            throw 'invalid call';
+            throw 'Unable to initiate transfer via flutterwave';
         }
     }
     catch(err){
-       throw err
+       throw `Unable to initiate transfer via flutterwave ${err}`
     }
 }
 
