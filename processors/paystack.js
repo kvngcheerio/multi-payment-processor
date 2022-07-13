@@ -13,7 +13,6 @@ const METHODS = {
     POST:'post'
 }
 
-
 const extractStatus = (response) => ({
     status: extractResponseProperty("status", response),
     message: extractResponseProperty("message", response),
@@ -46,11 +45,11 @@ const getPaystackBankList = async() => {
         }
         
         else {
-            throw 'invalid call';
+            throw 'Unable to reach paystack bank list service';
         }
     }
     catch(err){
-        throw 'Bank list error';
+        throw `Unable to reach paystack bank list service - ${err}`;
     }
 }
 
@@ -75,11 +74,11 @@ const paystackVerifyBankAccount = async(accountNumber, bankCode) => {
             };  
         }
         else {
-        throw 'invalid call';
+        throw 'Paystack verify bank account error';
     }
 }
  catch(error){
-     throw 'Paystack verify bank account error';
+     throw `Paystack verify bank account error - ${error}`;
     };
 
 
@@ -107,9 +106,12 @@ const paystackInitiateCheckout = async(emailAddress, amount, callbackUrl) => {
                 checkout:checkoutDetail
             };  
         }
+        else {
+            throw 'Unable to create paystack payment link'
+        }
     }
     catch(e){
-        throw e;
+        throw `Unable to create paystack payment link - ${e}`;
     }
     
 }
@@ -142,11 +144,11 @@ const paystackVerifyTransaction = async(paymentReference) => {
         }
         
         else {
-            throw 'invalid call';
+            throw 'Unable to verify transaction via paystack';
         }
     }
     catch(err){
-       throw err
+        throw `Unable to verify transaction via paystack - ${err}`
     }
 
 }
@@ -177,12 +179,12 @@ const paystackMakeTransfer = async(accountNumber, bankCode, amount, description)
                 transaction:{...transfer, accountNumber:preTransferCall.preTransfer.details.account_number, bankCode:preTransferCall.preTransfer.details.bank_code, fullName:preTransferCall.preTransfer.details.account_name, currency: CURRENCY.NGN, amount:reduceAmount(transfer.transferAmount)}
             };  
         }
-
-
-
+        else {
+            throw 'Unable to initiate transfer via paystack';
+        }
     }
     catch(error) {
-        console.log(error, 'Paystack make transfer error');
+        throw `Unable to initiate transfer via paystack ${err}`
     }
 
 }

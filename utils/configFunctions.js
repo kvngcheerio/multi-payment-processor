@@ -11,10 +11,10 @@ const makeUrlCallWithoutData = async (callObject) => {
     const { callUrl, callMethod, callHeaders} = callObject
 
     if (!callUrl) {
-      throw 'invalid Url'
+      throw 'Call Url is Invalid'
     }
     if(!callMethod) {
-      throw 'invalid method'
+      throw 'Call Method is Invalid'
     }
     
     const args = {
@@ -22,7 +22,7 @@ const makeUrlCallWithoutData = async (callObject) => {
         headers: {...HEADERS, ...callHeaders},
     };
 
-    let requestBody = await axios[args.method](callUrl, {headers:args.headers}).then((response) => { return response.data}).catch((err)=> {console.log(err, 'url call error')});
+    let requestBody = await axios[args.method](callUrl, {headers:args.headers}).then((response) => { return response.data}).catch((err)=> {throw `Request Call Error - ${err}`});
     if (Object.keys(requestBody).length) {
       return requestBody;
     }
@@ -33,14 +33,14 @@ const makeUrlCallWithoutData = async (callObject) => {
     const { callUrl, callMethod, callHeaders, callRequest } = callObject
 
     if (!callUrl) {
-      throw 'invalid Url'
+      throw 'Call Url is Invalid'
     }
     if(!callMethod) {
-      throw 'invalid method'
+      throw 'Call Method is Invalid'
     }
 
     if(!callRequest) {
-      throw 'invalid body'
+      throw 'Call Request Body is Invalid'
     }
     
     const args = {
@@ -48,7 +48,7 @@ const makeUrlCallWithoutData = async (callObject) => {
         headers: {...HEADERS, ...callHeaders},
     };
 
-    let requestBody = await axios[args.method](callUrl, callRequest, {headers:args.headers}).then((response) => { return response.data}).catch((err)=> {console.log(err, 'url call error')});
+    let requestBody = await axios[args.method](callUrl, callRequest, {headers:args.headers}).then((response) => { return response.data}).catch((err)=> {throw `Request Call Error - ${err}`});
     if (Object.keys(requestBody).length) {
       return requestBody;
     }
