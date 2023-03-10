@@ -5,10 +5,7 @@ const {
   monnifySecretKey,
 } = require("../config/environment");
 const { extractResponseProperty } = require("../utils/helpers");
-const {
-  makeUrlCallWithData,
-  makeUrlCallWithoutData,
-} = require("../utils/configFunctions");
+const { makeApiCall, requestTypes } = require("../utils/configFunctions");
 const { bankListResponse } = require("../config/response");
 
 const loginCallHeaders = {
@@ -24,11 +21,6 @@ const callHeaders = async () => {
   };
 };
 
-const METHODS = {
-  GET: "get",
-  POST: "post",
-};
-
 const extractStatus = (response) => ({
   status: extractResponseProperty("requestSuccessful", response),
   message: extractResponseProperty("responseMessage", response),
@@ -37,12 +29,11 @@ const extractStatus = (response) => ({
 const makeLoginCall = async () => {
   try {
     const callObject = {
-      callUrl: monnifyLoginUrl,
-      callMethod: METHODS.POST,
-      callHeaders: loginCallHeaders,
-      callRequest: {},
+      url: monnifyLoginUrl,
+      method: requestTypes.POST,
+      headers: loginCallHeaders,
     };
-    const loginCall = await makeUrlCallWithData(callObject);
+    const loginCall = await makeApiCall(callObject);
     if (loginCall) {
       return {
         accessToken: loginCall.responseBody.accessToken,
@@ -58,11 +49,12 @@ const getMonnifyBankList = async () => {
   try {
     //make bank list call with makeurl util by passing in banklist url, method and authorization header
     const callObject = {
-      callUrl: monnifyBankUrl,
-      callMethod: METHODS.GET,
-      callHeaders: await callHeaders(),
+      url: monnifyBankUrl,
+      callMethod: requestTypes.GET,
+      headers: await callHeaders(),
     };
-    const bankListCall = await makeUrlCallWithoutData(callObject);
+
+    const bankListCall = await makeApiCall(callObject);
     if (bankListCall) {
       const outResponse = {
         name: "bankName",

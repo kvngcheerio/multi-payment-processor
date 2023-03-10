@@ -12,10 +12,7 @@ const {
   convertAmount,
   reduceAmount,
 } = require("../utils/helpers");
-const {
-  makeUrlCallWithoutData,
-  makeUrlCallWithData,
-} = require("../utils/configFunctions");
+const { makeApiCall, requestTypes } = require("../utils/configFunctions");
 const {
   bankListResponse,
   verifyAccountResponse,
@@ -25,11 +22,6 @@ const {
 
 const callHeaders = {
   Authorization: `Bearer ${paystackSecretKey}`,
-};
-
-const METHODS = {
-  GET: "get",
-  POST: "post",
 };
 
 const extractStatus = (response) => ({
@@ -46,11 +38,11 @@ const getPaystackBankList = async () => {
   try {
     //make bank list call with makeurl util by passing in banklist url, method and authorization header
     const callObject = {
-      callUrl: paystackBankUrl,
-      callMethod: METHODS.GET,
-      callHeaders: callHeaders,
+      url: paystackBankUrl,
+      method: requestTypes.GET,
+      headers: callHeaders,
     };
-    const bankListCall = await makeUrlCallWithoutData(callObject);
+    const bankListCall = await makeApiCall(callObject);
     if (bankListCall) {
       const outResponse = {
         name: "bankName",
@@ -73,11 +65,11 @@ const getPaystackBankList = async () => {
 const paystackVerifyBankAccount = async (accountNumber, bankCode) => {
   try {
     const callObject = {
-      callUrl: `${paystackVerifyAccountUrl}?account_number=${accountNumber}&bank_code=${bankCode}`,
-      callMethod: METHODS.GET,
-      callHeaders: callHeaders,
+      url: `${paystackVerifyAccountUrl}?account_number=${accountNumber}&bank_code=${bankCode}`,
+      method: requestTypes.GET,
+      headers: callHeaders,
     };
-    const verifyAccountCall = await makeUrlCallWithoutData(callObject);
+    const verifyAccountCall = await makeApiCall(callObject);
     if (verifyAccountCall) {
       const outResponse = {
         account_name: "accountName",
@@ -103,16 +95,16 @@ const paystackVerifyBankAccount = async (accountNumber, bankCode) => {
 const paystackInitiateCheckout = async (emailAddress, amount, callbackUrl) => {
   try {
     const callObject = {
-      callUrl: paystackURL,
-      callMethod: METHODS.POST,
-      callHeaders: callHeaders,
-      callRequest: {
+      url: paystackURL,
+      method: requestTypes.POST,
+      headers: callHeaders,
+      data: {
         email: emailAddress,
         amount: convertAmount(amount),
         callback_url: callbackUrl,
       },
     };
-    const checkoutCall = await makeUrlCallWithData(callObject);
+    const checkoutCall = await makeApiCall(callObject);
     if (checkoutCall) {
       const outResponse = {
         authorization_url: "paymentUrl",
@@ -140,14 +132,12 @@ const paystackVerifyTransaction = async (paymentReference) => {
   try {
     //make bank list call with makeurl util by passing in banklist url, method and authorization header
     const callObject = {
-      callUrl: `${paystackTransactionVerificationUrl}/${paymentReference}`,
-      callMethod: METHODS.GET,
-      callHeaders: callHeaders,
+      url: `${paystackTransactionVerificationUrl}/${paymentReference}`,
+      method: requestTypes.GET,
+      headers: callHeaders,
     };
 
-    const transactionVerificationCall = await makeUrlCallWithoutData(
-      callObject
-    );
+    const transactionVerificationCall = await makeApiCall(callObject);
     if (transactionVerificationCall) {
       const outResponse = {
         amount: "paymentAmount",
@@ -186,17 +176,17 @@ const paystackMakeTransfer = async (
     const preTransferCall = await preTransfer(accountNumber, bankCode);
 
     const callObject = {
-      callUrl: paystackTransferUrl,
-      callMethod: METHODS.POST,
-      callHeaders: callHeaders,
-      callRequest: {
+      url: paystackTransferUrl,
+      method: requestTypes.POST,
+      headers: callHeaders,
+      data: {
         source: "balance",
         amount: convertAmount(amount),
         recipient: preTransferCall.preTransfer.recipientCode,
         reason: description,
       },
     };
-    const transferCall = await makeUrlCallWithData(callObject);
+    const transferCall = await makeApiCall(callObject);
 
     if (transferCall) {
       const outResponse = {
@@ -232,10 +222,10 @@ const preTransfer = async (accountNumber, bankCode) => {
       bankCode
     );
     const callObject = {
-      callUrl: paystackPreTransferUrl,
-      callMethod: METHODS.POST,
-      callHeaders: callHeaders,
-      callRequest: {
+      url: paystackPreTransferUrl,
+      method: requestTypes.POST,
+      headers: callHeaders,
+      data: {
         type: "nuban",
         account_number: accountNumber,
         bank_code: bankCode,
@@ -243,7 +233,7 @@ const preTransfer = async (accountNumber, bankCode) => {
         currency: CURRENCY.NGN,
       },
     };
-    const preTransferCall = await makeUrlCallWithData(callObject);
+    const preTransferCall = await makeApiCall(callObject);
 
     if (preTransferCall) {
       const outResponse = {

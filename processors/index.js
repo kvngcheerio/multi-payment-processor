@@ -1,9 +1,9 @@
-const paystack  = require('./paystack');
-const flutterwave = require('./flutterwave');
-const monnify = require('./monnify')
+const paystack = require("./paystack");
+const flutterwave = require("./flutterwave");
+const monnify = require("./monnify");
 
 module.exports = {
-    paystack,
-    flutterwave,
-    monnify,
-}
+  paystack,
+  flutterwave,
+  monnify,
+};
