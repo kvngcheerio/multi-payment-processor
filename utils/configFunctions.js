@@ -1,61 +1,43 @@
-const axios = require('axios');
-const {extractResponseBody, } = require('./helpers')
-
-
-const HEADERS = {
-    Accept: "application/json",
-    "Content-Type": "application/json",
+const requestTypes = {
+  POST: "POST",
+  GET: "GET",
 };
 
-const makeUrlCallWithoutData = async (callObject) => {
-    const { callUrl, callMethod, callHeaders} = callObject
+const makeApiCall = async (callObject) => {
+  let { url, method, headers, data } = callObject;
 
-    if (!callUrl) {
-      throw 'Call Url is Invalid'
-    }
-    if(!callMethod) {
-      throw 'Call Method is Invalid'
-    }
-    
-    const args = {
-        method: callMethod.toLowerCase(),
-        headers: {...HEADERS, ...callHeaders},
-    };
-
-    let requestBody = await axios[args.method](callUrl, {headers:args.headers}).then((response) => { return response.data}).catch((err)=> {throw `Request Call Error - ${err}`});
-    if (Object.keys(requestBody).length) {
-      return requestBody;
-    }
-    
+  if (!url) {
+    throw "No url provided";
   }
 
-  const makeUrlCallWithData = async (callObject) => {
-    const { callUrl, callMethod, callHeaders, callRequest } = callObject
-
-    if (!callUrl) {
-      throw 'Call Url is Invalid'
-    }
-    if(!callMethod) {
-      throw 'Call Method is Invalid'
-    }
-
-    if(!callRequest) {
-      throw 'Call Request Body is Invalid'
-    }
-    
-    const args = {
-        method: callMethod.toLowerCase(),
-        headers: {...HEADERS, ...callHeaders},
-    };
-
-    let requestBody = await axios[args.method](callUrl, callRequest, {headers:args.headers}).then((response) => { return response.data}).catch((err)=> {throw `Request Call Error - ${err}`});
-    if (Object.keys(requestBody).length) {
-      return requestBody;
-    }
-    
+  if (!method) {
+    throw `Method must be one of ${Object.keys(requestTypes).join(", ")}`;
   }
 
-  module.exports = {
-      makeUrlCallWithData,
-      makeUrlCallWithoutData,
+  headers = {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+    ...headers,
+  };
+
+  const val = !!data
+    ? { body: typeof data !== "string" ? JSON.stringify(data) : data }
+    : {};
+
+  const req = await fetch(url, {
+    method: method,
+    headers: headers,
+    ...val,
+  });
+
+  if (!req.ok) {
+    throw await req.json();
   }
+
+  return req.json();
+};
+
+module.exports = {
+  makeApiCall,
+  requestTypes,
+};
